@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Smart AI Farming Assistant</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#134e4a" />
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Language Selection Screen -->
+        <div id="languageSelection" class="screen language-container hidden">
+            <div class="logo">
+                <div class="logo-icon">🧑‍🌾</div>
+                <h1 data-key="welcome">Welcome</h1>
+                <p data-key="choose_language">Choose your language / अपनी भाषा चुनें / તમારી ભાષા પસંદ કરો</p>
+            </div>
+            <div class="language-buttons">
+                <button class="btn-language" data-lang="en">English</button>
+                <button class="btn-language" data-lang="hi">हिंदी (Hindi)</button>
+                <button class="btn-language" data-lang="gu">ગુજરાતી (Gujarati)</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard" class="screen">
+            <header class="header">
+                <div class="header-content">
+                    <div class="location">
+                        <span class="icon" aria-hidden="true">📍</span>
+                        <span id="dashboardLocation">Surat, Gujarat</span>
+                    </div>
+                    <div class="profile-icon" role="button" tabindex="0" onclick="showScreen('profile')" aria-label="Open Profile">
+                        <span class="icon" aria-hidden="true">👤</span>
+                    </div>
+                </div>
+            </header>
+            <main class="main-content">
+                <div class="card weather-card" role="button" tabindex="0" onclick="showScreen('weather')" aria-label="Open Weather">
+                    <div class="weather-current">
+                        <div class="weather-info">
+                            <div class="weather-icon" aria-hidden="true">☀️</div>
+                            <div>
+                                <div class="temperature">28°C</div>
+                                <div class="condition" data-key="partly_cloudy">Partly Cloudy</div>
+                                <div class="humidity" data-key="humidity">Humidity: 65%</div>
+                            </div>
+                        </div>
+                        <div class="rain-chance">
+                            <div class="rain-percentage">40%</div>
+                            <div class="rain-label" data-key="rain_chance">Rain Chance</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title" data-key="quick_actions">Quick Actions</h3>
+                <div class="action-grid">
+                    <a href="#" class="action-btn" onclick="showScreen('weather')" role="button" aria-label="Open Weather">
+                        <span class="action-icon" aria-hidden="true">🌦️</span>
+                        <span class="action-label" data-key="weather">Weather</span>
+                    </a>
+                    <a href="#" class="action-btn" onclick="showScreen('chat')" role="button" aria-label="Open AI Assistant">
+                        <span class="action-icon" aria-hidden="true">🤖</span>
+                        <span class="action-label" data-key="ai_assistant">AI Assistant</span>
+                    </a>
+                    <a href="#" class="action-btn" onclick="showScreen('diseases')" role="button" aria-label="Open Diseases Info">
+                        <span class="action-icon" aria-hidden="true">🌿</span>
+                        <span class="action-label" data-key="diseases">Diseases</span>
+                    </a>
+                    <a href="#" class="action-btn" onclick="showScreen('schemes')" role="button" aria-label="Open Government Schemes">
+                        <span class="action-icon" aria-hidden="true">🏛️</span>
+                        <span class="action-label" data-key="schemes">Schemes</span>
+                    </a>
+                </div>
+
+                <div class="card tasks-card">
+                    <h3 class="section-title" data-key="todays_tasks">Today's Tasks</h3>
+                    <div class="task-list">
+                        <div class="task-item">
+                            <span class="task-icon" aria-hidden="true">💧</span>
+                            <span class="task-text" data-key="task_water">Water tomato plants (Morning)</span>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-icon" aria-hidden="true">🐞</span>
+                            <span class="task-text" data-key="task_pests">Check crop for pests</span>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-icon" aria-hidden="true">🌡️</span>
+                            <span class="task-text" data-key="task_temp">Monitor soil temperature</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Weather Screen -->
+        <div id="weather" class="screen hidden">
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('dashboard')" aria-label="Back to Dashboard">←</button>
+                <h2 data-key="weather_forecast">Weather Forecast</h2>
+            </header>
+            <main class="weather-content">
+                <div id="forecastList" class="forecast-list card">
+                    </div>
+                <div class="card soil-recommendation">
+                    <h3 data-key="crop_recommendations">Crop Recommendations by Soil Type</h3>
+                    <div class="soil-selector form-group">
+                        <label for="soilType" class="form-label" data-key="soil_type">Soil Type</label>
+                        <select id="soilType" class="form-control" onchange="updateCropRecommendations()">
+                            </select>
+                    </div>
+                    <div id="cropRecommendations" class="crop-list">
+                        </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chat" class="screen hidden">
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('dashboard')" aria-label="Back to Dashboard">←</button>
+                <h2 data-key="ai_assistant">AI Assistant</h2>
+            </header>
+            <main class="chat-content">
+                <div class="quick-questions">
+                    <h4 data-key="quick_questions">Quick Questions</h4>
+                    <div class="question-buttons">
+                        <button class="question-btn" data-key="weather_advice" onclick="askQuickQuestion('weather_advice')">Weather advice for crops</button>
+                        <button class="question-btn" data-key="pest_control" onclick="askQuickQuestion('pest_control')">Natural pest control</button>
+                        <button class="question-btn" data-key="fertilizer_tips" onclick="askQuickQuestion('fertilizer_tips')">Fertilizer recommendations</button>
+                    </div>
+                </div>
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="chat-input">
+                    <div class="input-container">
+                        <input type="text" id="chatInput" class="form-control" data-key="chat_placeholder" placeholder="Ask me anything about farming..." aria-label="Chat input" />
+                        <button class="voice-btn" onclick="startVoiceInput()" aria-label="Start voice input">🎤</button>
+                        <button class="send-btn" onclick="sendMessage()" aria-label="Send message">➤</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Diseases Screen -->
+        <div id="diseases" class="screen hidden">
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('dashboard')" aria-label="Back to Dashboard">←</button>
+                <h2 data-key="disease_detection">Disease Detection</h2>
+            </header>
+            <main class="disease-content">
+                <div class="camera-section card">
+                    <div class="camera-placeholder" onclick="openCamera()" role="button" tabindex="0" aria-label="Take photo of your plant">
+                        <div class="camera-icon">📸</div>
+                        <p data-key="take_photo">Take a photo of your plant</p>
+                        <button class="btn btn--primary" data-key="open_camera">Open Camera</button>
+                        <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="analyzeImage(event)" aria-label="Upload plant image" />
+                    </div>
+                    <div id="analysisResult" class="analysis-result hidden">
+                        <h3 data-key="analysis_result">Analysis Result</h3>
+                        <div id="diseaseInfo"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 data-key="common_diseases">Common Diseases</h3>
+                    <div id="diseaseList" class="disease-list"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Schemes Screen -->
+        <div id="schemes" class="screen hidden">
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('dashboard')" aria-label="Back to Dashboard">←</button>
+                <h2 data-key="government_schemes">Government Schemes</h2>
+            </header>
+            <main class="schemes-content">
+                <div class="search-box card">
+                    <input type="text" id="schemeSearch" class="form-control" data-key="search_schemes" placeholder="Search schemes..." onkeyup="filterSchemes()" aria-label="Search government schemes" />
+                </div>
+                <div id="schemesList" class="schemes-list"></div>
+            </main>
+        </div>
+
+        <!-- Community Screen -->
+        <div id="community" class="screen hidden">
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('dashboard')" aria-label="Back to Dashboard">←</button>
+                <h2 data-key="community">Community Q&A</h2>
+            </header>
+            <main class="community-content">
+                <div class="card ask-question">
+                    <h3 data-key="ask_question">Ask a Question</h3>
+                    <textarea id="questionInput" class="form-control" data-key="ask_placeholder" placeholder="What would you like to ask other farmers?" aria-label="Ask a question"></textarea>
+                    <button class="btn btn--primary btn--full-width" data-key="post_question" onclick="postQuestion()">Post Question</button>
+                </div>
+                <div id="qaList" class="qa-list"></div>
+            </main>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="profile" class="screen hidden">
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('dashboard')" aria-label="Back to Dashboard">←</button>
+                <h2 data-key="profile">Profile</h2>
+            </header>
+            <main class="profile-content">
+                <div class="card profile-section">
+                    <h3 data-key="farm_details">Farm Details</h3>
+                    <div class="form-group">
+                        <label for="locationInput" class="form-label" data-key="farm_location">Farm Location</label>
+                        <input type="text" class="form-control" id="locationInput" placeholder="e.g., Surat, Gujarat" aria-label="Farm Location" />
+                    </div>
+                    <div class="form-group">
+                        <label for="farmSizeInput" class="form-label" data-key="farm_size">Farm Size (acres)</label>
+                        <input type="number" class="form-control" id="farmSizeInput" value="15" aria-label="Farm Size" />
+                    </div>
+                    <div class="form-group">
+                        <label for="primaryCropSelect" class="form-label" data-key="primary_crop">Primary Crop</label>
+                        <select class="form-control" id="primaryCropSelect" aria-label="Primary Crop"></select>
+                    </div>
+                    <button id="saveLocationBtn" class="btn btn--primary btn--full-width" data-key="save">Save</button>
+                </div>
+                <div class="card settings-section">
+                    <h3 data-key="settings">Settings</h3>
+                    <div class="setting-item">
+                        <label for="languageSelect" class="form-label" data-key="language">Language</label>
+                        <select class="form-control" id="languageSelect" onchange="changeLanguage(this.value)" aria-label="Select Language">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="gu">ગુજરાતી</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="notificationToggle" class="form-label" data-key="notifications">Weather Notifications</label>
+                        <input type="checkbox" class="form-control" id="notificationToggle" checked aria-label="Toggle Weather Notifications" />
+                    </div>
+                    <div class="setting-item">
+                        <label for="offlineModeToggle" class="form-label" data-key="offline_mode">Offline Mode</label>
+                        <input type="checkbox" class="form-control" id="offlineModeToggle" aria-label="Toggle Offline Mode" />
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" role="navigation" aria-label="Primary Navigation">
+            <button class="nav-btn active" onclick="showScreen('dashboard')" aria-current="page" aria-label="Home">
+                <span class="nav-icon" aria-hidden="true">🏠</span>
+                <span class="nav-label" data-key="home">Home</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('weather')" aria-label="Weather">
+                <span class="nav-icon" aria-hidden="true">🌦️</span>
+                <span class="nav-label" data-key="weather">Weather</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('chat')" aria-label="Chat">
+                <span class="nav-icon" aria-hidden="true">🤖</span>
+                <span class="nav-label" data-key="chat">Chat</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('community')" aria-label="Community">
+                <span class="nav-icon" aria-hidden="true">👥</span>
+                <span class="nav-label" data-key="community">Community</span>
+            </button>
+            <button class="nav-btn" onclick="showScreen('profile')" aria-label="Profile">
+                <span class="nav-icon" aria-hidden="true">👤</span>
+                <span class="nav-label" data-key="profile">Profile</span>
+            </button>
+        </nav>
+
+        <!-- Loading Overlay -->
+        <div id="loading" class="loading hidden" aria-live="polite" aria-atomic="true" role="alert">
+            <div class="spinner" aria-hidden="true"></div>
+            <p data-key="loading">Loading...</p>
+        </div>
+
+        <!-- Offline Mode Indicator -->
+        <div id="offlineIndicator" class="offline-indicator hidden" aria-live="polite" aria-atomic="true" role="alert">
+            <span class="icon" aria-hidden="true">🚫</span> Offline Mode
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
