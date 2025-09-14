@@ -9,7 +9,7 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 
 # --- IMPORTANT: ADD YOUR API KEY HERE ---
 # Get a free key from https://openweathermap.org/appid
-WEATHER_API_KEY = "Enter your apu key" 
+WEATHER_API_KEY = "Enter your api key" 
 
 # --- API Endpoints ---
 
